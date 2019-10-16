@@ -30,7 +30,15 @@ import (
 var loginCmd = &cobra.Command{
 	Use:   "login",
 	Short: "登录校园网",
-	Long: `用于登录校园网，你需要把你的账号和密码告知 Launcher, Launcher 会帮助你登录你的校园网。`,
+	Long: `该命令用于登录校园网，你需要把你的账号和使用 base64 加密后的密码
+以yaml文件的形式保存在文件中，执行 launcher login 命令将默认读取您 $HOME/.l.yaml 文件并登录南邮校园网。
+	如果您没有配置账号 yaml 文件，您可以使用如下命令生成 yaml 文件并手工修改用户名密码：
+		launcher gen
+	如果您登录校园网想使用自定义的文件路径，您可以使用 -c 参数引导账号文件，例如：
+		launcher login -c /root/.l.yaml
+	您可以用如下网址将您的密码加密：
+		https://base64.supfree.net/
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		user, B64Pass, err := ya.ReadYaml(cfgFile)
 		if err != nil {
@@ -42,7 +50,11 @@ var loginCmd = &cobra.Command{
 			fmt.Printf("读取错误：%v",err)
 			return
 		}
-		op.PostOperation(user, string(pass))
+		if op.PostOperation(user, string(pass)){
+			fmt.Println("南邮校园网登录成功！您可以使用 launcher logout 命令登出校园网！")
+		}else {
+			fmt.Println("南邮校园网登录失败！请检查您的配置！")
+		}
 	},
 
 }
@@ -85,6 +97,6 @@ func initConfig() {
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
+		fmt.Println("正在使用配置文件:", viper.ConfigFileUsed())
 	}
 }

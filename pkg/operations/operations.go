@@ -2,13 +2,16 @@ package operations
 
 import (
 	"crypto/tls"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"time"
 )
 
-func PostOperation(user string, pass string) {
+func PostOperation(user string, pass string) (res bool) {
 	config := tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -29,10 +32,24 @@ func PostOperation(user string, pass string) {
 		panic(err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	_, err = client.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		panic(err)
 	}
+	result, _ := ioutil.ReadAll(resp.Body)
+	content := string(result)
+	if  strings.Contains(content, "msga=") {
+		errReg, err := regexp.Compile("msga=([\\s\\S]*?);")
+		if err != nil{
+			fmt.Println("登录出现问题: ")
+			fmt.Println(err)
+			return false
+		}
+		fmt.Println("登录出现问题: "+strings.Split(errReg.FindString(content),"'")[1])
+		return false
+	}
+
+	return true
 }
 
 func GetOperation() {
@@ -48,11 +65,11 @@ func GetOperation() {
 	client := &http.Client{Transport: tr}
 	req, err := http.NewRequest("GET", "http://192.168.168.168/F.htm", nil)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	_, err = client.Do(req)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 }
