@@ -45,10 +45,13 @@ func PostOperation(user string, pass string) (res bool) {
 			fmt.Println(err)
 			return false
 		}
-		fmt.Println("登录出现问题: "+strings.Split(errReg.FindString(content),"'")[1])
+		if strings.Split(errReg.FindString(content),"'")[1] == ""{
+			fmt.Println("登录出现认证问题: 您的账号可能已经登录。")
+			return false
+		}
+		fmt.Println("登录出现认证问题: "+strings.Split(errReg.FindString(content),"'")[1])
 		return false
 	}
-
 	return true
 }
 
