@@ -19,19 +19,28 @@ import (
   "fmt"
   "github.com/spf13/cobra"
   "os"
-
-
 )
 
 
-var cfgFile string
+var (
+  cfgFile string
+  ChinaNetWifi = false
+  )
 
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
   Use:   "Launcher",
   Short: "Launcher 是 Go 语言开发的南京邮电大学校园网登录器",
-  Long: `Launcher 是南邮 ISL 实验室基于 Go 语言开发的校园网登录器，
+  Long: `
+██╗      █████╗ ██╗   ██╗███╗   ██╗ ██████╗██╗  ██╗███████╗██████╗ 
+██║     ██╔══██╗██║   ██║████╗  ██║██╔════╝██║  ██║██╔════╝██╔══██╗
+██║     ███████║██║   ██║██╔██╗ ██║██║     ███████║█████╗  ██████╔╝
+██║     ██╔══██║██║   ██║██║╚██╗██║██║     ██╔══██║██╔══╝  ██╔══██╗
+███████╗██║  ██║╚██████╔╝██║ ╚████║╚██████╗██║  ██║███████╗██║  ██║
+╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═══╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+                                                                      
+Launcher 是南邮 ISL 实验室基于 Go 语言开发的校园网登录器，
 用于服务器接入校园网使用，现已开源：https://github.com/NJUPT-ISL/Launcher
 你需要把你的账号和使用 base64 加密后的密码以yaml文件的形式保存在文件中，默认读
 取您 $HOME 下的 .l.yaml 文件。

@@ -1,6 +1,9 @@
 #!/bin/zsh
-echo "Release Linux version"
+echo "Release Linux amd64 version"
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o launcher \
+&& zip launcher-linux-x86_64.zip launcher && rm -f launcher
+echo "Release Linux arm version"
+CGO_ENABLED=0 GOOS=linux GOARCH=arm go build -o launcher \
 && zip launcher-linux-x86_64.zip launcher && rm -f launcher
 echo "Release MacOS version"
 CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -o launcher \

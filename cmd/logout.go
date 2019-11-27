@@ -27,7 +27,7 @@ var logoutCmd = &cobra.Command{
 	Short: "登出校园网",
 	Long: `该命令用于登出校园网，使用 launcher logout 将退出南邮校园网`,
 	Run: func(cmd *cobra.Command, args []string) {
-		op.GetOperation()
+		op.DefaultLogout()
 		fmt.Println("Launcher: 已登出南邮校园网。")
 	},
 }

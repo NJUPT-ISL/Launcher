@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func PostOperation(user string, pass string) (res bool) {
+func DefaultLogin(user string, pass string) (res bool) {
 	config := tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -55,7 +55,74 @@ func PostOperation(user string, pass string) (res bool) {
 	return true
 }
 
-func GetOperation() {
+func LoginChinaNetWifi(user string, pass string,ip string)  (res bool){
+	config := tls.Config{
+		InsecureSkipVerify: true,
+	}
+	tr := &http.Transport{
+		MaxIdleConns:       10,
+		IdleConnTimeout:    30 * time.Second,
+		DisableCompression: true,
+		TLSClientConfig:    &config,
+	}
+	client := &http.Client{Transport: tr}
+	data := url.Values{}
+	data.Add("DDDDD",user)
+	data.Add("upass",pass)
+	data.Add("0MKKey","123456")
+	data.Add("v6ip","")
+	req, err := http.NewRequest("POST", "http://p.njupt.edu.cn:801/eportal/?c=ACSetting&a=Login&protocol=http:&hostname=p.njupt.edu.cn&iTermType=1&wlanuserip="+ip+"&wlanacip=null&wlanacname=SPL_ME60&mac=00-00-00-00-00-00&ip="+ip+"&enAdvert=0&queryACIP=0&loginMethod=1", strings.NewReader(data.Encode()))
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	if resp.StatusCode == 200 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func GetIP() string {
+	config := tls.Config{
+		InsecureSkipVerify: true,
+	}
+	tr := &http.Transport{
+		MaxIdleConns:       10,
+		IdleConnTimeout:    30 * time.Second,
+		DisableCompression: true,
+		TLSClientConfig:    &config,
+	}
+	client := &http.Client{Transport: tr}
+	req, err := http.NewRequest("GET", "http://p.njupt.edu.cn", nil)
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	context := string(result)
+	if strings.Contains(context,"v46ip="){
+		errReg, err := regexp.Compile("v46ip=([\\s\\S]*?);")
+		if err != nil {
+			fmt.Println(err)
+		}
+		return  strings.Split(errReg.FindString(context),"'")[1]
+	}
+	return ""
+}
+
+func DefaultLogout() {
 	config := tls.Config{
 		InsecureSkipVerify: true,
 	}

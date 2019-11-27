@@ -50,10 +50,18 @@ var loginCmd = &cobra.Command{
 			fmt.Printf("读取错误：%v",err)
 			return
 		}
-		if op.PostOperation(user, string(pass)){
-			fmt.Println("南邮校园网登录成功！您可以使用 launcher logout 命令登出校园网！")
+		if ChinaNetWifi {
+			if op.LoginChinaNetWifi(user, string(pass),op.GetIP()){
+				fmt.Println("南邮校园网登录成功！")
+			}else {
+				fmt.Println("南邮校园网登录失败！请检查您的配置！")
+			}
 		}else {
-			fmt.Println("南邮校园网登录失败！请检查您的配置！")
+			if op.DefaultLogin(user, string(pass)){
+				fmt.Println("南邮校园网登录成功！您可以使用 launcher logout 命令登出校园网！")
+			}else {
+				fmt.Println("南邮校园网登录失败！请检查您的配置！")
+			}
 		}
 	},
 
@@ -70,6 +78,8 @@ func init() {
 	// loginCmd.PersistentFlags().String("foo", "", "A help for foo")
 
 	loginCmd.PersistentFlags().StringVarP(&cfgFile, "config","c", os.Getenv("HOME")+"/.l.yaml", "配置文件路径")
+	loginCmd.PersistentFlags().BoolVar(&ChinaNetWifi, "CNWifi", false,"登录NJUPT-ChinaNet Wifi")
+
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// loginCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
