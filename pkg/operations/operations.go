@@ -67,9 +67,22 @@ func LoginChinaNetWifi(user string, pass string,ip string)  (res bool){
 	}
 	client := &http.Client{Transport: tr}
 	data := url.Values{}
-	data.Add("DDDDD",user)
+	data.Add("DDDDD",",0,"+user+"@njxy")
 	data.Add("upass",pass)
+	data.Add("R1","0")
+	data.Add("R2","0")
+	data.Add("R3","0")
+	data.Add("R6","0")
+	data.Add("para","00")
 	data.Add("0MKKey","123456")
+	data.Add("buttonClicked","")
+	data.Add("redirect_url","")
+	data.Add("err_flag","")
+	data.Add("username","")
+	data.Add("password","")
+	data.Add("user","")
+	data.Add("cmd","")
+	data.Add("Login","")
 	data.Add("v6ip","")
 	req, err := http.NewRequest("POST", "http://p.njupt.edu.cn:801/eportal/?c=ACSetting&a=Login&protocol=http:&hostname=p.njupt.edu.cn&iTermType=1&wlanuserip="+ip+"&wlanacip=null&wlanacname=SPL_ME60&mac=00-00-00-00-00-00&ip="+ip+"&enAdvert=0&queryACIP=0&loginMethod=1", strings.NewReader(data.Encode()))
 	if err != nil {
